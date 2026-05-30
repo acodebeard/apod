@@ -8,7 +8,7 @@ This project recreates NASA's Astronomy Picture of the Day site at `/apod`.
 - Local URL: `http://localhost/apod`
 - Stack: plain PHP, Apache rewrite rules, static CSS/JS, JSON data files, local image assets
 - Data storage: no database; APOD entries are loaded from JSON
-- Repository status: this directory is not currently a git repository
+- Repository: public GitHub repository at `https://github.com/acodebeard/apod`, default branch `main`.
 
 ## Directory Map
 
@@ -42,6 +42,7 @@ This project recreates NASA's Astronomy Picture of the Day site at `/apod`.
 - Do not rename or reorganize image folders casually; JSON entries and templates depend on current paths.
 - If editing served CSS or JS, remember that pages load minified files. Either keep the matching `.min.css` or `.min.js` file in sync, or intentionally change the template to load the unminified file during development.
 - Do not use JavaScript to render returned results or navigation markup. Render HTML server-side in PHP; JavaScript may only enhance existing markup by toggling classes, attributes, or state. Avoid innerHTML, insertAdjacentHTML, template-string markup, and similar DOM-writing patterns.
+- Do not enable displayed PHP errors in production. Use `APOD_DEBUG=1` only for local debugging.
 
 ## Verification
 
@@ -79,6 +80,5 @@ curl -A 'Mozilla/5.0' -I http://localhost/apod/
 
 ## Working Notes
 
-- There is no git history here yet. Before broad changes, consider initializing a repository or making a backup.
 - Treat `data/apod.local.json`, generated images, and minified assets as high-churn files. Avoid broad formatting or regeneration unless the task calls for it.
 - Prefer local verification before production checks. Production at `alanfullbeard.com/apod` may differ from the current working tree until files are deployed.

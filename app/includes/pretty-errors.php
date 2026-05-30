@@ -1,7 +1,15 @@
 <?php
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
+$apodDebug = filter_var(getenv('APOD_DEBUG') ?: '0', FILTER_VALIDATE_BOOLEAN);
+
+ini_set('log_errors', '1');
+ini_set('display_errors', $apodDebug ? '1' : '0');
+ini_set('display_startup_errors', $apodDebug ? '1' : '0');
 error_reporting(E_ALL);
+
+if (!$apodDebug) {
+    return;
+}
+
 // collect errors here
 $phpErrors = [];
 
