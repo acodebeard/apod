@@ -5,7 +5,7 @@
   <div class="header-block flex flex-wrap flex-middle width-1-1">
 
     <h1 class="site-title flex flex-1">
-      <img class="flex-none" src="/apod/images/nasa-logo.svg" width="65" height="65" alt="NASA Logo">
+      <span class="site-mark flex-none" aria-hidden="true">APOD</span>
       <a href="/apod/"><span class="site-title-long">Astronomy Picture of the Day</span><span class="site-title-short">APOD</span></a>
     </h1>
 

@@ -73,10 +73,7 @@ body {
   text-rendering: optimizeLegibility;
   font-size: 16px;
   font-family: 'Lexend', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  background:url('/apod/images/webb-deep.webp') center no-repeat #232323;
-  background-size: cover;
-  background-blend-mode: overlay;
-  background-attachment: fixed;
+  background: #232323;
   overflow-x: hidden;
   position: relative;
   backface-visibility: hidden;
@@ -160,9 +157,19 @@ a:visited {
   padding:var(--global-gap-small);
   transition:box-shadow ease 333ms;
 }
-.site-header img {
-  will-change: width;
+.site-mark {
+  align-items: center;
+  border: 1px solid var(--global-light);
+  border-radius: 50%;
+  color: var(--global-light);
+  display: flex;
+  font-family: 'Zen Dots', sans-serif;
+  font-size: 12px;
+  height: 65px;
+  justify-content: center;
+  line-height: 1;
   transition: var(--global-transition);
+  width: 65px;
 }
 .site-header h1 a {
   font-size:clamp(20px, 3.2vw, 32px);
@@ -175,7 +182,9 @@ a:visited {
 .site-header.is-stuck h1 a {
   font-size: 22px;
 }
-.site-header.is-stuck img {
+.site-header.is-stuck .site-mark {
+  font-size: 8px;
+  height: 35px;
   width: 35px;
 }
 .site-title {
@@ -202,14 +211,29 @@ a:visited {
   }
 }
 .header-button button {
-    background: none;
+    background: transparent;
     border: none;
-    filter: invert(1);
-    text-indent: -99999rem;
-    background:url('/apod/images/icons/bars-solid-full.svg') center no-repeat transparent;
-    background-size: contain;
-    width: 40px;
+    color: transparent;
+    font-size: 0;
     height: 40px;
+    position: relative;
+    width: 40px;
+}
+.header-button button::before,
+.header-button button::after {
+  background: var(--global-light);
+  content: '';
+  height: 2px;
+  left: 8px;
+  position: absolute;
+  right: 8px;
+}
+.header-button button::before {
+  box-shadow: 0 8px 0 var(--global-light);
+  top: 11px;
+}
+.header-button button::after {
+  top: 27px;
 }
 .header-button button:hover,
 .header-button button:focus {

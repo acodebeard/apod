@@ -5,6 +5,7 @@ define('APOD_DATA_FILE', APOD_ROOT . '/data/apod.local.json');
 define('APOD_BASE_PATH', '/apod');
 
 require_once APOD_APP . '/includes/pretty-errors.php';
+require_once APOD_APP . '/includes/assets.php';
 
 $page = $_GET['page'] ?? 'gallery';
 $slug = $_GET['slug'] ?? null;
@@ -47,7 +48,6 @@ if ($page === 'image') {
   }
 }
 
-$cb = mt_rand(2, 20000);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -59,14 +59,15 @@ $cb = mt_rand(2, 20000);
   <meta name="description" content="Explore NASA's Astronomy Picture of the Day archive.">
   <!-- preload fonts -->
   <!-- Lexend 400 (Regular) -->
-  <link rel="preload" href="/apod/assets/css/fonts/lexend-400.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="<?= apod_asset_url('assets/css/fonts/lexend-400.woff2') ?>" as="font" type="font/woff2" crossorigin>
 
   <!-- Lexend 700 (Bold) -->
-  <link rel="preload" href="/apod/assets/css/fonts/lexend-700.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="preload" href="/apod/assets/css/fonts/zen-dots.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="<?= apod_asset_url('assets/css/fonts/lexend-700.woff2') ?>" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="<?= apod_asset_url('assets/css/fonts/zen-dots.woff2') ?>" as="font" type="font/woff2" crossorigin>
 
-  <link href="/apod/assets/css/critical.min.css?cb=<?php echo $cb; ?>" rel="stylesheet" type="text/css">
-  <link href="/apod/assets/css/main.min.css?cb=<?php echo $cb; ?>" rel="stylesheet" type="text/css" media="print" onload="this.media='all';">
+  <link href="<?= apod_asset_url('assets/css/critical.min.css') ?>" rel="stylesheet" type="text/css">
+  <link href="<?= apod_asset_url('assets/css/main.min.css') ?>" rel="stylesheet" type="text/css" media="print" onload="this.media='all';">
+  <noscript><link href="<?= apod_asset_url('assets/css/main.min.css') ?>" rel="stylesheet" type="text/css"></noscript>
   <?php include APOD_APP . '/includes/conditions.php'; ?>
 </head>
 

@@ -76,7 +76,7 @@ if (isset($page)) {
       <meta property="og:image:height"   content="630">
       HTML;
       echo $metaTags;
-      echo '<link rel="stylesheet" href="/apod/assets/css/lightbox.min.css?cb=' . $cb . '" type="text/css">';
+      echo '<link rel="stylesheet" href="' . apod_asset_url('assets/css/lightbox.min.css') . '" type="text/css">';
       break;
 
     case 'home':
@@ -93,7 +93,7 @@ if (isset($page)) {
         }
         </script>
         JSONLD;
-      echo '<link rel="stylesheet" href="/apod/assets/css/gallery.min.css?cb=' . $cb . '" type="text/css">';
+      echo '<link rel="stylesheet" href="' . apod_asset_url('assets/css/gallery.min.css') . '" type="text/css">';
       break;
 
     case 'about':
