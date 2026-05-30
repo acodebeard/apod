@@ -37,8 +37,10 @@ Place the project at `/opt/lampp/htdocs/apod` or another Apache document path th
 Useful checks after PHP changes:
 
 ```bash
-php -l index.php
-find app scripts -name '*.php' -print -exec php -l {} \;
+scripts/php-lint.sh
+scripts/check-source-only.sh
+scripts/check-file-modes.sh
+scripts/check-assets.sh
 curl -A 'Mozilla/5.0' -I http://localhost/apod/
 ```
 
