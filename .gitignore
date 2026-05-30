@@ -1,0 +1,11 @@
+# Local/generated media. The public repo is source-only.
+/images/
+/thumbs/
+
+# Local utility/debug files.
+/audit.php
+
+# Local environment and editor noise.
+.env
+*.log
+.DS_Store
