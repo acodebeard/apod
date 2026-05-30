@@ -50,6 +50,8 @@ curl -A 'Mozilla/5.0' -I http://localhost/apod/
 
 `images/` and `thumbs/` are generated local assets and are excluded from git. The JSON data may reference those paths, but the media files themselves should be generated or deployed separately.
 
+Shared UI chrome is implemented with PHP/CSS and tracked font assets so a source checkout does not depend on ignored image files.
+
 The share-image utility lives at:
 
 ```bash
