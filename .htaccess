@@ -1,11 +1,23 @@
 RewriteEngine On
 RewriteBase /apod/
 
+# Block hidden files and directories such as .git before real-file passthrough.
+RewriteRule (^|/)\. - [F,L]
+
 # Keep application internals and utility scripts out of direct web access.
 RewriteRule ^(app|scripts)/ - [F,L]
 RewriteRule ^audit\.php$ - [F,L]
 RewriteRule ^(README|AGENTS)\.md$ - [F,L]
 RewriteRule ^data/(apod\.json|stopwords\.txt)$ - [F,L]
+
+# Basic bot blocking. Keep before static and pretty-route short circuits.
+RewriteCond %{HTTP_USER_AGENT} libwww-perl|python-requests|wget|curl [NC]
+RewriteRule ^ - [F,L]
+
+# Reject suspicious requests before static and pretty-route short circuits.
+RewriteCond %{REQUEST_URI} ^.{2000,} [OR]
+RewriteCond %{QUERY_STRING} (\.\./|etc/passwd|input_file|mosConfig_) [NC]
+RewriteRule ^ - [F,L]
 
 # -----------------------------------------
 # DO NOT REWRITE requests for static assets
@@ -61,6 +73,11 @@ FileETag None
 # Set UTF-8 charset for all responses
 AddDefaultCharset utf-8
 
+AddType image/webp .webp
+AddType image/svg+xml .svg
+AddType font/woff2 .woff2
+AddType application/json .json
+
 # Enable GZIP compression for performance
 <IfModule mod_deflate.c>
   AddOutputFilterByType DEFLATE text/plain text/html text/xml text/css
@@ -78,15 +95,11 @@ AddDefaultCharset utf-8
 <IfModule mod_expires.c>
   ExpiresActive On
   ExpiresByType image/webp "access plus 1 year"
+  ExpiresByType image/jpeg "access plus 1 year"
+  ExpiresByType image/png "access plus 1 year"
+  ExpiresByType image/svg+xml "access plus 1 year"
+  ExpiresByType font/woff2 "access plus 1 year"
   ExpiresByType text/css "access plus 1 month"
   ExpiresByType application/javascript "access plus 1 month"
+  ExpiresByType application/json "access plus 5 minutes"
 </IfModule>
-
-# Basic bot blocking
-RewriteCond %{HTTP_USER_AGENT} libwww-perl|python-requests|wget|curl [NC]
-RewriteRule .* - [F,L]
-
-# Reject suspicious query strings
-RewriteCond %{REQUEST_URI} ^.{2000,} [OR]
-RewriteCond %{QUERY_STRING} (\.\.\/|etc/passwd|input_file|mosConfig_) [NC]
-RewriteRule ^.*$ - [F,L]
