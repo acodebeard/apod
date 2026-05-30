@@ -59,11 +59,11 @@ if ($page === 'image') {
   <meta name="description" content="Explore NASA's Astronomy Picture of the Day archive.">
   <!-- preload fonts -->
   <!-- Lexend 400 (Regular) -->
-  <link rel="preload" href="<?= apod_asset_url('assets/css/fonts/lexend-400.woff2') ?>" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="<?= APOD_BASE_PATH ?>/assets/css/fonts/lexend-400.woff2" as="font" type="font/woff2" crossorigin>
 
   <!-- Lexend 700 (Bold) -->
-  <link rel="preload" href="<?= apod_asset_url('assets/css/fonts/lexend-700.woff2') ?>" as="font" type="font/woff2" crossorigin>
-  <link rel="preload" href="<?= apod_asset_url('assets/css/fonts/zen-dots.woff2') ?>" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="<?= APOD_BASE_PATH ?>/assets/css/fonts/lexend-700.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="<?= APOD_BASE_PATH ?>/assets/css/fonts/zen-dots.woff2" as="font" type="font/woff2" crossorigin>
 
   <link href="<?= apod_asset_url('assets/css/critical.min.css') ?>" rel="stylesheet" type="text/css">
   <link href="<?= apod_asset_url('assets/css/main.min.css') ?>" rel="stylesheet" type="text/css" media="print" onload="this.media='all';">
