@@ -34,6 +34,8 @@ Live site: `https://alanfullbeard.com/apod`
 
 Place the project at `/opt/lampp/htdocs/apod` or another Apache document path that serves it at `/apod`.
 
+Set `APOD_DEBUG=1` only in local development to render friendly PHP errors. Production should leave `APOD_DEBUG` unset or set to `0` so errors are logged server-side instead of displayed.
+
 Useful checks after PHP changes:
 
 ```bash

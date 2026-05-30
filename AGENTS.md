@@ -42,6 +42,7 @@ This project recreates NASA's Astronomy Picture of the Day site at `/apod`.
 - Do not rename or reorganize image folders casually; JSON entries and templates depend on current paths.
 - If editing served CSS or JS, remember that pages load minified files. Either keep the matching `.min.css` or `.min.js` file in sync, or intentionally change the template to load the unminified file during development.
 - Do not use JavaScript to render returned results or navigation markup. Render HTML server-side in PHP; JavaScript may only enhance existing markup by toggling classes, attributes, or state. Avoid innerHTML, insertAdjacentHTML, template-string markup, and similar DOM-writing patterns.
+- Do not enable displayed PHP errors in production. Use `APOD_DEBUG=1` only for local debugging.
 
 ## Verification
 
