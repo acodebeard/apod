@@ -32,3 +32,6 @@ jobs:
 
       - name: Verify public JavaScript assets parse
         run: scripts/check-assets.sh
+
+      - name: Verify video media rendering
+        run: php scripts/check-video-support.php

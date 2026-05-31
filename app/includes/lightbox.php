@@ -1,26 +1,27 @@
 <?php
-// make sure these are set earlier:
-$slug        = $entry['slug'];
-$titleText   = !empty($entry['title']) ? $entry['title'] : 'Image';
-$escapedTitle = htmlspecialchars($titleText);
+$slug        = (string)($entry['slug'] ?? '');
+$date        = (string)($entry['date'] ?? '');
+$basename    = "apod-{$date}-full";
+$titleText   = !empty($entry['title']) ? (string)$entry['title'] : 'Image';
+$escapedTitle = apod_h($titleText);
 
 // For your lightbox’s full‐size URL:
-$escapedFull = htmlspecialchars($entry['url_full']);
+$escapedFull = apod_h($entry['url_full'] ?? '');
 
 // Build a proper srcset from your url_main array
 $srcsetParts = [];
 $widths = [1200, 980, 640, 440];
 foreach ($widths as $w) {
   // url_main was generated in your JSON rebuild
-  $url = $entry['url_main'][$w] ?? $entry['url_thumb'];
+  $url = $entry['url_main'][$w] ?? ($entry['url_thumb'] ?? '');
   if ($url) {
-    $srcsetParts[] = htmlspecialchars($url) . " {$w}w";
+    $srcsetParts[] = apod_h((string)$url) . " {$w}w";
   }
 }
 $srcset = implode(",\n      ", $srcsetParts);
 
 // Pick a sensible <img> src—here I’m defaulting to the 640px version
-$imgSrc = htmlspecialchars($entry['url_main'][640] ?? $entry['url_thumb']);
+$imgSrc = apod_h($entry['url_main'][640] ?? ($entry['url_thumb'] ?? ''));
 ?>
 
 <div class="apod-media">
@@ -28,6 +29,7 @@ $imgSrc = htmlspecialchars($entry['url_main'][640] ?? $entry['url_thumb']);
     href="#!"
     class="lightbox-trigger"
     data-full="<?= $escapedFull ?>"
+    data-alt="<?= $escapedTitle ?>"
     aria-label="View full-size image of <?= $escapedTitle ?>">
     <picture>
       <source
@@ -40,7 +42,7 @@ $imgSrc = htmlspecialchars($entry['url_main'][640] ?? $entry['url_thumb']);
         width="1200"
         height="675"
         decoding="async"
-        aria-describedby="explanation-<?= htmlspecialchars($slug) ?>"
+        aria-describedby="explanation-<?= apod_h($slug) ?>"
         style="width:100%;height:auto;max-width:1200px;">
     </picture>
   </a>
@@ -60,7 +62,7 @@ $imgSrc = htmlspecialchars($entry['url_main'][640] ?? $entry['url_thumb']);
   <p class="visually-hidden">JavaScript is disabled. Displaying standard image.</p>
   <img
     src="/apod/images/main/980/<?= $basename ?>.webp"
-    alt="<?= htmlspecialchars($title ?: 'Astronomy Picture of the Day') ?>"
+    alt="<?= apod_h($titleText ?: 'Astronomy Picture of the Day') ?>"
     width="960"
     height="540">
 </noscript>
