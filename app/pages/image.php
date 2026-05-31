@@ -46,6 +46,7 @@ $escapedTitle  = apod_h($title);
 $mediaType = apod_media_type($entry);
 $fullUrl = $mediaType === 'video' ? apod_video_embed_url($entry) : (string)($entry['url_full'] ?? '');
 $escapedFull = apod_h($fullUrl);
+$escapedEntrySlug = htmlspecialchars((string)($entry['slug'] ?? ''), ENT_QUOTES, 'UTF-8');
 
 // Helper: slugify function in PHP to match JS logic
 function slugify($text)
@@ -101,7 +102,7 @@ if (!$entry) {
       </time>
     </header>
 
-    <section id="explanation-<?= apod_h((string)($entry['slug'] ?? $slug)) ?>" class="apod-explanation">
+    <section id="explanation-<?= $escapedEntrySlug ?>" class="apod-explanation">
       <?= $explanation ?>
     </section>
 
