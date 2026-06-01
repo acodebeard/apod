@@ -1,41 +1,26 @@
 <?php
 
-$dataJson = file_get_contents(APOD_DATA_FILE);
-$apodData = json_decode($dataJson, true);
+$apodData = is_array($apodData ?? null) ? $apodData : [];
 $slug = $_GET['slug'] ?? '';
-// Extract key fields
-$title = $entry['title'];
-$date = $entry['date'];
-$credit = $entry['credit'] ?? 'NASA / APOD';
-$explanation = nl2br($entry['explanation']);
-// Find the matching APOD entry
-$entry = null;
-foreach ($apodData as $item) {
-  if (slugify($item['title']) === $slug) {
-    $entry = $item;
-    break;
-  }
-}
 
-// — assume $apodData (array), slugify(), $entry and $slug are already set —
-
-// 1) Find the index of the current entry
 $currentIndex = null;
 foreach ($apodData as $i => $item) {
-  if (slugify($item['title']) === $slug) {
+  if (($item['slug'] ?? '') === $slug) {
+    $entry = $item;
     $currentIndex = $i;
     break;
   }
 }
 
-if ($currentIndex === null || $entry === null) {
-  echo "<p>Image not found.</p>";
+if ($currentIndex === null || empty($entry)) {
+  echo '<p>Image not found.</p>';
   return;
 }
 
-// 1) Gather dates and find the current index as before
-$allDates     = array_column($apodData, 'date');
-$currentIndex = array_search($entry['date'], $allDates, true);
+$title = (string)($entry['title'] ?? 'Untitled');
+$date = (string)($entry['date'] ?? '');
+$credit = $entry['credit'] ?? $entry['copyright'] ?? 'NASA / APOD';
+$explanation = nl2br(apod_h((string)($entry['explanation'] ?? '')));
 $total        = count($apodData);
 
 // ‣ PREVIOUS (wraps around to index 0 after the last)
@@ -43,14 +28,14 @@ $prevIndex = ($currentIndex + 1) % $total;
 $prevItem  = $apodData[$prevIndex];
 // guard against missing title
 $prevTitle = $prevItem['title'] ?? 'Untitled';
-$prevSlug  = slugify($prevTitle);
+$prevSlug  = $prevItem['slug'] ?? slugify((string)$prevTitle);
 
 // ‣ NEXT (only if we’re not already at 0)
 if ($currentIndex > 0) {
   $nextIndex = $currentIndex - 1;
   $nextItem  = $apodData[$nextIndex];
   $nextTitle = $nextItem['title'] ?? 'Untitled';
-  $nextSlug  = slugify($nextTitle);
+  $nextSlug  = $nextItem['slug'] ?? slugify((string)$nextTitle);
 } else {
   // first image → no real “next” link
   $nextSlug  = null;
@@ -58,25 +43,13 @@ if ($currentIndex > 0) {
 }
 
 
-// Construct standardized local paths
-$basename = "apod-{$date}-full";
-$mainImagePath = "/apod/images/main/980/{$basename}.webp"; // fallback preview for <img>
-$thumbPath     = "/apod/images/thumbs/{$basename}.webp";   // only used on gallery
-$escapedTitle  = htmlspecialchars($title);
+$escapedTitle  = apod_h($title);
+$mediaType = apod_media_type($entry);
+$fullUrl = $mediaType === 'video' ? apod_video_embed_url($entry) : (string)($entry['url_full'] ?? '');
+$escapedFull = apod_h($fullUrl);
+$escapedEntrySlug = htmlspecialchars((string)($entry['slug'] ?? ''), ENT_QUOTES, 'UTF-8');
 
-$imageUrl = $entry['url_full'] ?? $entry['hdurl'] ?? $entry['url'] ?? '';
-$imageFilename = basename(parse_url($imageUrl, PHP_URL_PATH)); // handles ?foo=bar
-
-$imageExtension = pathinfo($imageFilename, PATHINFO_EXTENSION);
-$imageExtension = strtolower($imageExtension);
-if (empty($imageExtension)) {
-  $imageExtension = 'jpg'; // sensible fallback
-}
-
-$escapedFull = htmlspecialchars($entry['url_full'] ?? "/apod/images/full/{$basename}.{$imageExtension}", ENT_QUOTES, 'UTF-8');
-
-// Helper: slugify function in PHP to match JS logic
-function slugify($text)
+function slugify(string $text): string
 {
   $text = strtolower($text);
   $text = preg_replace('/[^\w\s-]/', '', $text);
@@ -84,17 +57,11 @@ function slugify($text)
   $text = preg_replace('/-+/', '-', $text);
   return $text;
 }
-
-if (!$entry) {
-  echo "<p>Image not found.</p>";
-  return;
-}
-// ─────────────────────────────────────────────────────────────────────────────
 ?>
 
 <figure class="apod-article">
   <div class="flex-1 apod-image-block">
-    <?php include APOD_APP . '/includes/lightbox.php'; ?>
+    <?= apod_render_media($entry) ?>
   </div>
 
   <!-- Caption and Explanation -->
@@ -129,22 +96,32 @@ if (!$entry) {
       </time>
     </header>
 
-    <section class="apod-explanation">
+    <section id="explanation-<?= $escapedEntrySlug ?>" class="apod-explanation">
       <?= $explanation ?>
     </section>
 
     <footer class="position-relative flex-1 apod-credit">
       <small>
-        Image Credit & Copyright: <?= htmlspecialchars($credit) ?>
+        <?= $mediaType === 'video' ? 'Video' : 'Image' ?> Credit &amp; Copyright: <?= apod_h((string)$credit) ?>
       </small>
 
       <div class="image-tools">
-        <a href="<?= $escapedFull ?>"
-          download
-          class="button download-button"
-          aria-label="Download full‑size image">
-          Download Full Size
-        </a>
+        <?php if ($mediaType === 'image' && $escapedFull !== ''): ?>
+          <a href="<?= $escapedFull ?>"
+            download
+            class="button download-button"
+            aria-label="Download full-size image">
+            Download Full Size
+          </a>
+        <?php elseif ($mediaType === 'video' && $escapedFull !== ''): ?>
+          <a href="<?= $escapedFull ?>"
+            target="_blank"
+            rel="noopener"
+            class="button download-button"
+            aria-label="Open video source">
+            Open Video
+          </a>
+        <?php endif; ?>
 
         <div class="image-share position-relative" style="display: none;" hidden>
           <button

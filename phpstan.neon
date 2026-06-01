@@ -1,0 +1,11 @@
+parameters:
+  level: 6
+  paths:
+    - index.php
+    - app
+    - scripts
+  bootstrapFiles:
+    - tools/phpstan/bootstrap.php
+  typeAliases:
+    ApodImageSet: 'array{440?: string, 640?: string, 980?: string, 1200?: string}'
+    ApodEntry: 'array{date?: string, title?: string, slug?: string, explanation?: string, media_type?: string, credit?: string, copyright?: string, url?: string, url_video?: string, url_full?: string, url_thumb?: string, thumbnail_url?: string, url_main?: ApodImageSet}'

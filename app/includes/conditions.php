@@ -18,6 +18,8 @@ $safeFullUrl = $safeShareUrl;
 $safePageUrl  = htmlspecialchars("{$baseUrl}{$_SERVER['REQUEST_URI']}", ENT_QUOTES, 'UTF-8');
 $safeTitle    = htmlspecialchars($entry['title']       ?? '', ENT_QUOTES, 'UTF-8');
 $safeDesc     = htmlspecialchars($entry['explanation'] ?? '', ENT_QUOTES, 'UTF-8');
+$mediaType = apod_media_type($entry ?? []);
+$safeVideoUrl = $mediaType === 'video' ? apod_h(apod_video_embed_url($entry ?? [])) : '';
 $dt = $date;
 //$safeFullUrl = htmlspecialchars($fullUrl, ENT_QUOTES, 'UTF-8');
 
@@ -30,7 +32,27 @@ if (isset($page)) {
   switch ($page) {
     case 'image':
 
-      $jsonLd = <<<JSONLD
+      if ($mediaType === 'video') {
+        $jsonLd = <<<JSONLD
+      <script type="application/ld+json">
+      {
+        "@context":"https://schema.org",
+        "@type":"VideoObject",
+        "name":"{$t}",
+        "description":"{$d}",
+        "thumbnailUrl":["{$u}"],
+        "embedUrl":"{$safeVideoUrl}",
+        "url":"{$p}",
+        "uploadDate":"{$dt}",
+        "datePublished":"{$dt}",
+        "dateModified":"{$dt}",
+        "author":{"@type":"Organization","name":"NASA"},
+        "license":"https://apod.nasa.gov/apod/lib/ApodCopyright.php"
+      }
+      </script>
+      JSONLD;
+      } else {
+        $jsonLd = <<<JSONLD
       <script type="application/ld+json">
       {
         "@context":"https://schema.org",
@@ -46,6 +68,7 @@ if (isset($page)) {
       }
       </script>
       JSONLD;
+      }
       $metaTags = <<<HTML
       <link rel="preconnect" href="https://fonts.googleapis.com">
       <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -76,7 +99,11 @@ if (isset($page)) {
       <meta property="og:image:height"   content="630">
       HTML;
       echo $metaTags;
-      echo '<link rel="stylesheet" href="' . apod_asset_url('assets/css/lightbox.min.css') . '" type="text/css">';
+      if ($mediaType === 'video') {
+        echo '<script defer src="' . apod_asset_url('assets/js/video.min.js') . '"></script>';
+      } else {
+        echo '<link rel="stylesheet" href="' . apod_asset_url('assets/css/lightbox.min.css') . '" type="text/css">';
+      }
       break;
 
     case 'home':

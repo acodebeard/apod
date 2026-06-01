@@ -6,6 +6,7 @@ define('APOD_BASE_PATH', '/apod');
 
 require_once APOD_APP . '/includes/pretty-errors.php';
 require_once APOD_APP . '/includes/assets.php';
+require_once APOD_APP . '/includes/media.php';
 
 $page = $_GET['page'] ?? 'gallery';
 $slug = $_GET['slug'] ?? null;
@@ -21,9 +22,9 @@ if (!in_array($page, $allowedPages)) {
 $dataJson = file_get_contents(APOD_DATA_FILE);
 $apodData = json_decode($dataJson, true);
 
-// pick random image
-$imageEntries = array_filter($apodData, fn($e) => ($e['media_type'] ?? '') === 'image');
-$rand = $imageEntries[array_rand($imageEntries)];
+// Pick a random APOD entry.
+$randomEntries = array_values($apodData);
+$rand = $randomEntries[array_rand($randomEntries)];
 $randomUrl = APOD_BASE_PATH . "/image/{$rand['slug']}";
 
 if ($page === 'random') {

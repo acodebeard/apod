@@ -122,6 +122,78 @@ picture {
   padding: var(--global-gap-small) var(--global-gap-medium); 
 }
 
+.apod-video {
+  width: min(1200px, 100%);
+}
+
+.apod-video-poster {
+  position: relative;
+  overflow: hidden;
+  border-radius: 10px;
+  background: #08090d;
+}
+
+.apod-video-poster img,
+.apod-video-frame iframe {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border: 0;
+}
+
+.apod-video-poster img {
+  height: auto;
+  object-fit: cover;
+}
+
+.apod-video-play {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-width: 180px;
+  padding: 14px 18px;
+  border: 2px solid #fff;
+  border-radius: 6px;
+  background: rgba(0, 0, 0, 0.74);
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 700;
+  transform: translate(-50%, -50%);
+  cursor: pointer;
+}
+
+.apod-video-play:focus-visible,
+.apod-video-play:hover {
+  background: #0d4d7d;
+  outline: 3px solid #fff;
+  outline-offset: 3px;
+}
+
+.apod-video-play-icon {
+  width: 0;
+  height: 0;
+  border-left: 16px solid currentColor;
+  border-top: 10px solid transparent;
+  border-bottom: 10px solid transparent;
+}
+
+.apod-video-frame {
+  width: 100%;
+}
+
+.apod-video-frame:focus {
+  outline: 3px solid #fff;
+  outline-offset: 4px;
+}
+
+.apod-video-fallback {
+  margin-top: 1rem;
+}
+
 #about {
   background: #191a21ed;
   color: #dedede;

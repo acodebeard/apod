@@ -2,6 +2,9 @@
 /images/
 /thumbs/
 
+# Composer dependencies are installed locally and in CI.
+/vendor/
+
 # Local utility/debug files.
 /audit.php
 

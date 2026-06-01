@@ -140,6 +140,23 @@
   object-fit: cover;
   height: 200px;
   width: 100%;
+  position: relative;
+}
+
+.media-badge {
+  position: absolute;
+  left: 10px;
+  bottom: 10px;
+  display: inline-flex;
+  align-items: center;
+  min-height: 28px;
+  padding: 4px 9px;
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.78);
+  color: #fff;
+  font-size: .85rem;
+  font-weight: 700;
+  letter-spacing: 0;
 }
 
 .apod-content {
@@ -223,4 +240,3 @@
   }
 }
   */
-  

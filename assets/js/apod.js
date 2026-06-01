@@ -1,36 +1,41 @@
 const thumbBtn = document.getElementById('thumbViewBtn');
-    const listBtn = document.getElementById('listViewBtn');
-    const apodGallery = document.getElementById('apodGallery');
-    thumbBtn.addEventListener('click', () => {
-      apodGallery.classList.remove('list-view');
-      apodGallery.classList.add('grid-view');
-      thumbBtn.classList.add('active');
-      listBtn.classList.remove('active');
-    });
+const listBtn = document.getElementById('listViewBtn');
+const apodGallery = document.getElementById('apodGallery');
+const paginationControls = document.getElementById('paginationControls');
+const perPage = 12;
+let currentPage = 1;
+let apodData = [];
 
-    listBtn.addEventListener('click', () => {
-      apodGallery.classList.add('list-view');
-      apodGallery.classList.remove('grid-view');
-      thumbBtn.classList.remove('active');
-      listBtn.classList.add('active');
-    });
+function setGalleryView(isGridView) {
+  apodGallery.classList.toggle('grid-view', isGridView);
+  apodGallery.classList.toggle('list-view', !isGridView);
+  thumbBtn.classList.toggle('active', isGridView);
+  listBtn.classList.toggle('active', !isGridView);
+  thumbBtn.setAttribute('aria-pressed', isGridView ? 'true' : 'false');
+  listBtn.setAttribute('aria-pressed', isGridView ? 'false' : 'true');
+}
 
-    const paginationControls = document.getElementById('paginationControls');
-    const perPage = 12;
-    let currentPage = 1;
-    let apodData = [];
+thumbBtn.addEventListener('click', () => {
+  setGalleryView(true);
+});
 
-    async function getApods() {
-      try {
-        const res = await fetch('/apod/data/apod.local.json');
-        apodData = await res.json();
-        renderPage(currentPage);
-        renderPagination();
-      } catch (err) {
-        console.error('Error loading APODs:', err);
-        apodGallery.innerHTML = `<p>Failed to load APOD data.</p>`;
-      }
-    }
+listBtn.addEventListener('click', () => {
+  setGalleryView(false);
+});
+
+async function getApods() {
+  try {
+    const res = await fetch('/apod/data/apod.local.json');
+    apodData = await res.json();
+    renderPage(currentPage);
+    renderPagination();
+  } catch (err) {
+    console.error('Error loading APODs:', err);
+    const message = document.createElement('p');
+    message.textContent = 'Failed to load APOD data.';
+    apodGallery.replaceChildren(message);
+  }
+}
 
 function slugify(title) {
   return title.toLowerCase()
@@ -38,49 +43,83 @@ function slugify(title) {
     .replace(/\s+/g, '-')
     .replace(/-+/g, '-');
 }
-    
 
-    function renderPage(page) {
-      apodGallery.innerHTML = '';
-      const start = (page - 1) * perPage;
-      const slice = apodData.slice(start, start + perPage);
+function createGalleryCard(entry, index, page) {
+  const card = document.createElement('a');
+  card.classList.add('apod-card');
+  card.href = `image/${entry.slug || slugify(entry.title)}`;
+  card.rel = 'noopener';
 
-      slice.forEach((entry, index) => {
-        const card = document.createElement('a');
-        card.classList.add('apod-card');
-        const slug = slugify(entry.title);
-        card.href = `image/${slug}`;
-        
-        card.rel = 'noopener';
+  const thumb = document.createElement('div');
+  thumb.className = 'apod-thumb';
+  thumb.style.aspectRatio = '16 / 9';
+  thumb.style.overflow = 'hidden';
 
-        card.innerHTML = `
-            <div class="apod-thumb" style="aspect-ratio: 16/9; overflow: hidden;">
-              <img src="thumbs/${entry.date}.webp" alt="${entry.title}" width="480" height="270"
-                  ${index === 0 && page === 1 ? 'fetchpriority="high"' : 'loading="lazy"'}
-                  decoding="async"
-                  style="object-fit: cover; width: 100%; height: 100%;">
-            </div>
-            <div class="apod-meta">
-              <p class="apod-date"><time datetime="${entry.date}">${entry.date}</time></p>
-              <div class="apod-title">${entry.title}</div>
-            </div>
-          `;
+  const img = document.createElement('img');
+  img.src = entry.url_thumb || `thumbs/${entry.date}.webp`;
+  img.alt = entry.title;
+  img.width = 480;
+  img.height = 270;
+  img.decoding = 'async';
+  img.style.objectFit = 'cover';
+  img.style.width = '100%';
+  img.style.height = '100%';
 
-        apodGallery.appendChild(card);
-      });
-    }
+  if (index === 0 && page === 1) {
+    img.fetchPriority = 'high';
+  } else {
+    img.loading = 'lazy';
+  }
+
+  thumb.appendChild(img);
+
+  if (entry.media_type === 'video') {
+    const badge = document.createElement('span');
+    badge.className = 'media-badge media-badge-video';
+    badge.textContent = 'Video';
+    thumb.appendChild(badge);
+  }
+
+  const meta = document.createElement('div');
+  meta.className = 'apod-meta';
+
+  const date = document.createElement('p');
+  date.className = 'apod-date';
+
+  const time = document.createElement('time');
+  time.dateTime = entry.date;
+  time.textContent = entry.date;
+  date.appendChild(time);
+
+  const title = document.createElement('div');
+  title.className = 'apod-title';
+  title.textContent = entry.title;
+
+  meta.append(date, title);
+  card.append(thumb, meta);
+
+  return card;
+}
+
+function renderPage(page) {
+  apodGallery.replaceChildren();
+  const start = (page - 1) * perPage;
+  const slice = apodData.slice(start, start + perPage);
+
+  slice.forEach((entry, index) => {
+    apodGallery.appendChild(createGalleryCard(entry, index, page));
+  });
+}
 
 function renderPagination() {
   const totalPages = Math.ceil(apodData.length / perPage);
-  paginationControls.innerHTML = '';
+  paginationControls.replaceChildren();
 
-  // Create wrapper for swipeable scroll
   const scrollWrapper = document.createElement('div');
   scrollWrapper.className = 'pagination-scroll';
   scrollWrapper.setAttribute('role', 'navigation');
   scrollWrapper.setAttribute('aria-label', 'Gallery pages');
 
-  // Previous button
   const prevBtn = document.createElement('button');
   prevBtn.textContent = 'Previous';
   prevBtn.setAttribute('aria-label', 'Go to previous page');
@@ -96,9 +135,6 @@ function renderPagination() {
   };
   scrollWrapper.appendChild(prevBtn);
 
-  /**
-   * Returns an array of page numbers to display in pagination
-   */
   function getPaginationRange(currentPage, totalPages, visiblePages = 7) {
     const half = Math.floor(visiblePages / 2);
     let start = Math.max(1, currentPage - half);
@@ -116,25 +152,22 @@ function renderPagination() {
     return pages;
   }
 
-  // Page number buttons
-  const visiblePages = 7;
-  const pageRange = getPaginationRange(currentPage, totalPages, visiblePages);
+  const pageRange = getPaginationRange(currentPage, totalPages);
 
-  pageRange.forEach(i => {
+  pageRange.forEach((pageNumber) => {
     const pageBtn = document.createElement('button');
-    pageBtn.textContent = i;
+    pageBtn.textContent = pageNumber;
     pageBtn.className = 'page-button';
 
-    if (i === currentPage) {
+    if (pageNumber === currentPage) {
       pageBtn.classList.add('active');
       pageBtn.setAttribute('aria-current', 'page');
     }
 
-    pageBtn.setAttribute('aria-label', `Go to page ${i}`);
+    pageBtn.setAttribute('aria-label', `Go to page ${pageNumber}`);
     pageBtn.setAttribute('type', 'button');
-
     pageBtn.onclick = () => {
-      currentPage = i;
+      currentPage = pageNumber;
       renderPage(currentPage);
       renderPagination();
     };
@@ -142,7 +175,6 @@ function renderPagination() {
     scrollWrapper.appendChild(pageBtn);
   });
 
-  // Next button
   const nextBtn = document.createElement('button');
   nextBtn.textContent = 'Next';
   nextBtn.setAttribute('aria-label', 'Go to next page');
@@ -158,10 +190,7 @@ function renderPagination() {
   };
   scrollWrapper.appendChild(nextBtn);
 
-  // Append to controls container
   paginationControls.appendChild(scrollWrapper);
 }
 
-
-
-    getApods();
+getApods();
