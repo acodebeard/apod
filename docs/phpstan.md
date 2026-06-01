@@ -17,9 +17,9 @@ composer run phpstan
 
 ## Current Baseline
 
-`phpstan.neon` starts at `level: 3`. That is intentional.
+`phpstan.neon` currently runs at `level: 6`. That is intentional.
 
-At this level PHPStan checks useful basics without requiring a full type-model cleanup of this procedural PHP app. It catches missing symbols, undefined variables, and common structural mistakes while staying quiet on the JSON `mixed` data that APOD still uses heavily.
+At this level PHPStan checks useful basics, missing function signatures, and iterable value types without requiring a full type-model cleanup of this procedural PHP app. APOD defines a small `ApodEntry` array shape in `phpstan.neon` for media helpers, while leaving the broader JSON data-flow cleanup for a later pass.
 
 ## Bootstrap
 

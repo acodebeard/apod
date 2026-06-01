@@ -7,11 +7,17 @@ function apod_h(?string $value): string
   return htmlspecialchars($value ?? '', ENT_QUOTES, 'UTF-8');
 }
 
+/**
+ * @phpstan-param ApodEntry $entry
+ */
 function apod_media_type(array $entry): string
 {
   return strtolower((string)($entry['media_type'] ?? 'image'));
 }
 
+/**
+ * @phpstan-param ApodEntry $entry
+ */
 function apod_render_media(array $entry): string
 {
   if (apod_media_type($entry) === 'video') {
@@ -23,6 +29,9 @@ function apod_render_media(array $entry): string
   return (string)ob_get_clean();
 }
 
+/**
+ * @phpstan-param ApodEntry $entry
+ */
 function apod_video_embed_url(array $entry): string
 {
   $url = (string)($entry['url_video'] ?? $entry['url'] ?? '');
@@ -49,6 +58,9 @@ function apod_video_embed_url(array $entry): string
   return $url;
 }
 
+/**
+ * @phpstan-param ApodEntry $entry
+ */
 function apod_video_poster_url(array $entry): string
 {
   foreach ([1200, 980, 640, 440] as $width) {
@@ -64,6 +76,9 @@ function apod_video_poster_url(array $entry): string
   return APOD_BASE_PATH . '/images/placeholder.webp';
 }
 
+/**
+ * @phpstan-param ApodEntry $entry
+ */
 function apod_render_video_media(array $entry): string
 {
   $title = (string)($entry['title'] ?? 'Astronomy Picture of the Day video');

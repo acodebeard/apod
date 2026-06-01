@@ -62,7 +62,7 @@ $imgSrc = apod_h($entry['url_main'][640] ?? ($entry['url_thumb'] ?? ''));
   <p class="visually-hidden">JavaScript is disabled. Displaying standard image.</p>
   <img
     src="/apod/images/main/980/<?= $basename ?>.webp"
-    alt="<?= apod_h($titleText ?: 'Astronomy Picture of the Day') ?>"
+    alt="<?= apod_h($titleText) ?>"
     width="960"
     height="540">
 </noscript>

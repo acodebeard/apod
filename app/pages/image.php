@@ -49,8 +49,7 @@ $fullUrl = $mediaType === 'video' ? apod_video_embed_url($entry) : (string)($ent
 $escapedFull = apod_h($fullUrl);
 $escapedEntrySlug = htmlspecialchars((string)($entry['slug'] ?? ''), ENT_QUOTES, 'UTF-8');
 
-// Helper: slugify function in PHP to match JS logic
-function slugify($text)
+function slugify(string $text): string
 {
   $text = strtolower($text);
   $text = preg_replace('/[^\w\s-]/', '', $text);
@@ -58,12 +57,6 @@ function slugify($text)
   $text = preg_replace('/-+/', '-', $text);
   return $text;
 }
-
-if (!$entry) {
-  echo "<p>Image not found.</p>";
-  return;
-}
-// ─────────────────────────────────────────────────────────────────────────────
 ?>
 
 <figure class="apod-article">
