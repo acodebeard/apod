@@ -1,5 +1,6 @@
 <?php
 
+$apodData = is_array($apodData ?? null) ? $apodData : [];
 $slug = $_GET['slug'] ?? '';
 
 $currentIndex = null;

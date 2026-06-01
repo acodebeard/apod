@@ -1,0 +1,8 @@
+parameters:
+  level: 3
+  paths:
+    - index.php
+    - app
+    - scripts
+  bootstrapFiles:
+    - tools/phpstan/bootstrap.php

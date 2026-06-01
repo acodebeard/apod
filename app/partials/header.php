@@ -1,3 +1,6 @@
+<?php
+$randomUrl = is_string($randomUrl ?? null) ? $randomUrl : APOD_BASE_PATH . '/random';
+?>
 <div class="sentinel" aria-hidden="true" role="presentation"></div>
 <a href="#main" class="skip-link visually-hidden focusable">Skip to main content</a>
 <header class="site-header">

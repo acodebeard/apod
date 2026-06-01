@@ -54,6 +54,7 @@ scripts/check-source-only.sh
 scripts/check-file-modes.sh
 scripts/check-assets.sh
 php scripts/check-video-support.php
+scripts/phpstan.sh
 ```
 
 For browser smoke tests, check:

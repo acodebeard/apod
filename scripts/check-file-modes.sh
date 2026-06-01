@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-allowed_executable='^(scripts/(generate-share-images\.php|php-lint\.sh|check-source-only\.sh|check-file-modes\.sh|check-assets\.sh|check-video-support\.php))$'
+allowed_executable='^(scripts/(generate-share-images\.php|php-lint\.sh|check-source-only\.sh|check-file-modes\.sh|check-assets\.sh|check-video-support\.php|phpstan\.sh))$'
 
 bad_modes="$(
   git ls-files --stage \

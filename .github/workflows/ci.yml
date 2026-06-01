@@ -21,6 +21,9 @@ jobs:
       - name: Set up ripgrep
         run: sudo apt-get update && sudo apt-get install -y ripgrep
 
+      - name: Install Composer dependencies
+        run: composer install --no-interaction --no-progress --prefer-dist
+
       - name: Run PHP syntax checks
         run: scripts/php-lint.sh
 
@@ -35,3 +38,6 @@ jobs:
 
       - name: Verify video media rendering
         run: php scripts/check-video-support.php
+
+      - name: Run PHPStan
+        run: scripts/phpstan.sh
